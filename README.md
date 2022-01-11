@@ -15,3 +15,8 @@ FirebaseとNext.jsの練習、テンプレート
   - ルーティング
   - ログイン状態で新規登録、ログインができないようにする
 - firestore
+  - エミュレータ
+
+## firebaseとの連携
+- .env.localにfirebaseの設定情報を記述
+- infrastructure/firebase/initをつくる
