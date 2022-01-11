@@ -20,3 +20,19 @@ FirebaseとNext.jsの練習、テンプレート
 ## firebaseとの連携
 - .env.localにfirebaseの設定情報を記述
 - infrastructure/firebase/initをつくる
+
+## hosting
+`firebase init`
+hostingを選択
+firebase.jsonに以下のようにページ分追加
+rewritesを追加しないでダイレクトアクセスすると404になる
+```json
+    "rewrites": [
+      {
+        "source": "/sign-in",
+        "destination": "/sign-in.html"
+      },
+    ]
+```
+`firebase deploy`する
+package.jsonに記述 `"deploy": "firebase deploy",`
