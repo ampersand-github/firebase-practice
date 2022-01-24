@@ -8,13 +8,33 @@
     ],
     "rewrites": [
       {
-        "source": "/sign-in",
-        "destination": "/sign-in.html"
-      },
-      {
-        "source": "/sign-up",
-        "destination": "/sign-up.html"
+        "source": "**",
+        "destination": "/index.html"
       }
     ]
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "functions": {
+      "port": 5001
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "database": {
+      "port": 9000
+    },
+    "hosting": {
+      "port": 5000
+    },
+    "ui": {
+      "enabled": true
+    }
   }
 }

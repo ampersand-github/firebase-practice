@@ -2,6 +2,7 @@ import { getApps, initializeApp } from "firebase/app";
 import { FirebaseApp } from "@firebase/app";
 import { getAuth } from "firebase/auth";
 import { Auth } from "@firebase/auth";
+import { Firestore, getFirestore } from "@firebase/firestore";
 
 const config = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -11,8 +12,10 @@ const config = {
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  databaseURL: process.env.NEXT_PUBLIC_DATABASE_URL,
 };
 const getFirebaseApp = () => getApps()[0] || initializeApp(config);
 
 const app: FirebaseApp = getFirebaseApp();
 export const auth: Auth = getAuth(app);
+export const db: Firestore = getFirestore(app);

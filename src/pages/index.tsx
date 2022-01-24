@@ -20,12 +20,22 @@ const index = (): JSX.Element => {
     await signOut();
   };
 
+  const goToFirestoreSamplePage = async () => {
+    await router.push({
+      // todo 定数ページつくってそこに書く
+      pathname: "/firestore-sample",
+    });
+  };
+
   // todo componentsに移動する
   return (
     <div>
       <h1>TopPage</h1>
       <button type="submit" onClick={handleOnClick}>
         logout
+      </button>
+      <button type="submit" onClick={goToFirestoreSamplePage}>
+        FirestoreSample
       </button>
     </div>
   );
