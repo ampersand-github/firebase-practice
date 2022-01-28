@@ -4,12 +4,12 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged as firebaseOnAuthStateChanged,
   signInWithEmailAndPassword,
-  User,
+  User as FirebaseUser,
 } from "firebase/auth";
 import { signOut as firebaseSignOut } from "@firebase/auth";
 import { FirebaseError } from "firebase/app";
 
-type IObserver = (user: User | null) => void;
+type IObserver = (user: FirebaseUser | null) => void;
 export type IErrorText = string | null;
 export interface ISign {
   email: string;

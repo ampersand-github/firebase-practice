@@ -22,7 +22,11 @@ export const useRanking = () => {
   const repository = new RankRepository(db);
 
   useEffect(() => {
-    findAll();
+    (async () => {
+      setLoading(true);
+      await findAll();
+      setLoading(false);
+    })();
   }, []);
 
   const findAll = async (): Promise<void> => {

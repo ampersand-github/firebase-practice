@@ -47,7 +47,7 @@ package.jsonに記述 `"deploy": "firebase deploy",`
 [Next.js + Firebaseで認証機能実装｜あきな＠旅するプログラマー｜note](https://note.com/akina7/n/na5debd9fa372)
 
 - authProvider作る
-  - src/contexts/auth.tsx
+  - src/contexts/use-auth-context.tsx
 - ログイン、新規登録、ログアウトの処理をつくる
   - infrastructure/firebase/auth/sign-in
   - infrastructure/firebase/auth/logout

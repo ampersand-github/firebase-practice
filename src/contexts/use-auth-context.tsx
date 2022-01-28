@@ -5,7 +5,6 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { User } from "firebase/auth";
 import { auth } from "../infrastructure/firebase/init";
 import {
   AuthService,
@@ -13,9 +12,10 @@ import {
   ISign,
 } from "../infrastructure/firebase/auth/auth-service";
 
-// undefinedが初期値になる。ログインしているならUser、していないならnull
-// todo ここでUser型(firebase)を使っては行けない。なぜならviewが依存してしまうから。
-// todo uid,emailなど必要な情報だけ送るべし
+export interface User {
+  uid: string;
+}
+
 export interface IAuthContext {
   user: User | null;
   isLoading: boolean;
@@ -45,9 +45,12 @@ export const AuthProvider = ({ children }: { children: ReactChild }) => {
     // onAuthStateChangedが非同期なので非同期にしてあげる。
     // そうしないと処理が完了してsetLoading(false)したはずが、ずれて初期値のままsetLoading(false)がはしってしまう
     (async () => {
-      await authService.onAuthStateChanged((user: User | null) => {
+      // todo ここのUserがfirebaseに依存しているけどいいのか？AuthService上で返る値を設定したいがやり方がわからない
+      authService.onAuthStateChanged((user: User | null) => {
         setLoading(true);
-        setUser(user);
+        if (user) {
+          setUser({ uid: user.uid });
+        }
         setLoading(false);
       });
     })();

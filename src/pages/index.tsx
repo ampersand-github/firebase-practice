@@ -32,6 +32,7 @@ const index = (): JSX.Element => {
   return (
     <div>
       <h1>TopPage</h1>
+      <p>{user?.uid}</p>
       <button type="submit" onClick={handleOnClick}>
         logout
       </button>
