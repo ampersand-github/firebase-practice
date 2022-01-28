@@ -65,6 +65,7 @@ export class RankRepository implements IRankRepository {
       name: rank.name,
     });
   };
+
   public remove = async (rank: Rank): Promise<void> => {
     const docRef = RankRepository.createDocPath(rank);
     await deleteDoc(docRef);
