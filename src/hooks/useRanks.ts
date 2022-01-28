@@ -22,21 +22,22 @@ export const useRanking = () => {
   const repository = new RankRepository(db);
 
   useEffect(() => {
-    void (async () => {
-      // todo 認証済みユーザーのデータを取得する場合はここでuidをもらってくる
-      const ranks: Rank[] = await repository.findAll();
-      setRanking(ranks);
-      setLoading(false);
-    })();
+    findAll();
   }, []);
 
+  const findAll = async (): Promise<void> => {
+    setLoading(true);
+    // todo 認証済みユーザーのデータを取得する場合はここでuidをもらってくる
+    const ranks: Rank[] = await repository.findAll();
+    setRanking(ranks);
+    setLoading(false);
+  };
   // ドメインオブジェクトのRankで受け取らずにIRank型で受け取る
   const update = async (rank: IRank, id: string): Promise<void> => {
     setLoading(true);
     const target = Rank.reBuild(rank, RankId.reBuild(id));
     await repository.update(target);
-    const ranks: Rank[] = await repository.findAll();
-    setRanking(ranks);
+    await findAll();
     setLoading(false);
   };
 
@@ -44,16 +45,14 @@ export const useRanking = () => {
     setLoading(true);
     const target = Rank.reBuild(rank, RankId.create());
     await repository.create(target);
-    const ranks: Rank[] = await repository.findAll();
-    setRanking(ranks);
+    await findAll();
     setLoading(false);
   };
   const remove = async (rank: IRank, id: string): Promise<void> => {
     setLoading(true);
     const target = Rank.reBuild(rank, RankId.reBuild(id));
     await repository.remove(target);
-    const ranks: Rank[] = await repository.findAll();
-    setRanking(ranks);
+    await findAll();
     setLoading(false);
   };
   return {

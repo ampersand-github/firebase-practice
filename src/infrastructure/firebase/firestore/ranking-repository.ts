@@ -1,11 +1,4 @@
-import {
-  deleteDoc,
-  doc,
-  getDocs,
-  onSnapshot,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { deleteDoc, doc, getDocs, setDoc, updateDoc } from "firebase/firestore";
 import { VERSION } from "../../../constant/firestore/verison";
 import { Rank } from "../../../domain/rank/rank";
 import { RankId } from "../../../domain/rank/rank-id";

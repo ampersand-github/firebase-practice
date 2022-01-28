@@ -1,47 +1,31 @@
-import React, { ChangeEvent, useLayoutEffect, useState } from "react";
-import { IAuthContext, useAuthContext } from "../contexts/auth";
-import {
-  IErrorText,
-  ISignup,
-  signup,
-} from "../infrastructure/firebase/auth/sign-up";
-import { useRouter } from "next/router";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { IErrorText, ISign, useAuthContext } from "../contexts/auth";
+import { goto } from "../utils/router";
 
-// このページにアクセスしたときにuserの初期値はログイン状態に関わらずundefinedが格納されている
-// その後すぐにuserにはUserかnullの型が格納される。
-// もし型がUserだった場合ログイン済みなのでこのページは表示させずにトップページへ遷移したい。
-// しかしuserの状態がundefinedからUserへ変化するため、undefined中の一瞬、画面が表示される。
-// その後すぐに遷移するが、それが一瞬のチラツキになる。
-// それを解決するためにundefinedであれば、</>を表示するようにした
 const SignUpPage = (): JSX.Element => {
   const [errText, setErrTest] = useState<string | null>(null);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(true);
-  const router = useRouter();
-  const { user }: { user: IAuthContext["user"] } = useAuthContext();
+  const { user, isLoading, signUp } = useAuthContext();
 
-  // useEffectと違い、useLayoutは画面が表示される前に実行
-  useLayoutEffect(() => {
-    // ログイン済みならtopページへ
-    if (user) {
-      router.push({
-        pathname: "/",
-      });
-    }
-    // ログインしていない
-    if (user === null) {
-      setLoading(false);
-    }
-  }, [user]); // [user]は初回アクセス時とuserが変化する度に実行
+  useEffect(() => {
+    (async () => {
+      // ログイン済み かつ ローディング完了
+      if (user && !isLoading) {
+        await goto("/");
+      }
+    })();
+  }, [user, isLoading]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const signUpProps: ISignup = {
+    const signUpProps: ISign = {
       email: email,
       password: password,
     };
-    const errorText: IErrorText = await signup(signUpProps);
+    // signInが成功するとuseEffectが動いてトップページへ遷移する
+    // 成功しなかった場合はこのページが再度表示される
+    const errorText: IErrorText = await signUp(signUpProps);
     setErrTest(errorText);
   };
 
@@ -52,10 +36,8 @@ const SignUpPage = (): JSX.Element => {
   const changePassword = (event: ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   };
-  // todo componentsに移動する
-  return loading ? (
-    <></>
-  ) : (
+
+  return (
     <div>
       <h1>ユーザ登録 {user?.email}</h1>
       <p>{errText}</p>

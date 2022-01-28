@@ -1,33 +1,34 @@
 import React, { useEffect } from "react";
-import { getAuth } from "firebase/auth";
-import router from "next/router";
-import { signOut } from "../infrastructure/firebase/auth/logout";
+import { useAuthContext } from "../contexts/auth";
+import { goto } from "../utils/router";
 
 const index = (): JSX.Element => {
+  const { user, isLoading, signOut } = useAuthContext();
+
   useEffect(() => {
-    // todo 関数に切り分ける必要はあるか？
-    getAuth().onAuthStateChanged(async (user) => {
-      if (!user) {
-        await router.push({
-          // todo 定数ページつくってそこに書く
-          pathname: "/sign-in",
-        });
+    (async () => {
+      // userがnull かつ ローディング完了
+      if (!user && !isLoading) {
+        await goto("/sign-in"); // todo 定数ページつくってそこに書く
       }
-    });
-  }, []);
+    })();
+  }, [user, isLoading]);
 
   const handleOnClick = async () => {
     await signOut();
+    // useEffectの第2引数にuserを設定しているので、signOutによって
+    // userがnullに変化する、
+    // それによってsign-inページへ遷移する
   };
 
   const goToFirestoreSamplePage = async () => {
-    await router.push({
-      // todo 定数ページつくってそこに書く
-      pathname: "/firestore-sample",
-    });
+    await goto("/firestore-sample");
   };
 
-  // todo componentsに移動する
+  if (isLoading) {
+    return <p>loading...</p>;
+  }
+
   return (
     <div>
       <h1>TopPage</h1>
