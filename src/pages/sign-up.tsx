@@ -1,6 +1,10 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { IErrorText, ISign, useAuthContext } from "../contexts/auth";
 import { goto } from "../utils/router";
+import { useAuthContext } from "../contexts/use-auth-context";
+import {
+  IErrorText,
+  ISign,
+} from "../infrastructure/firebase/auth/auth-service";
 
 const SignUpPage = (): JSX.Element => {
   const [errText, setErrTest] = useState<string | null>(null);
@@ -39,7 +43,7 @@ const SignUpPage = (): JSX.Element => {
 
   return (
     <div>
-      <h1>ユーザ登録 {user?.email}</h1>
+      <h1>ユーザ登録 {user?.uid}</h1>
       <p>{errText}</p>
       <form onSubmit={handleSubmit}>
         <label htmlFor="email">

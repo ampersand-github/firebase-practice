@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useAuthContext } from "../contexts/auth";
+import { useAuthContext } from "../contexts/use-auth-context";
 import { goto } from "../utils/router";
 
 const index = (): JSX.Element => {
@@ -7,6 +7,7 @@ const index = (): JSX.Element => {
 
   useEffect(() => {
     (async () => {
+      console.log(user, isLoading);
       // userがnull かつ ローディング完了
       if (!user && !isLoading) {
         await goto("/sign-in"); // todo 定数ページつくってそこに書く
@@ -15,10 +16,12 @@ const index = (): JSX.Element => {
   }, [user, isLoading]);
 
   const handleOnClick = async () => {
+    /*
+    useEffectの第2引数にuserを設定しているので、signOutによって
+    userがnullに変化する、
+    それによってsign-inページへ遷移する
+     */
     await signOut();
-    // useEffectの第2引数にuserを設定しているので、signOutによって
-    // userがnullに変化する、
-    // それによってsign-inページへ遷移する
   };
 
   const goToFirestoreSamplePage = async () => {

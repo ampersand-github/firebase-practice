@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactChild }) => {
   );
 
   useEffect(() => {
-    // onAuthStateChangedが非同期なので非同期にしてあげる。
+    // onAuthStateChangedが非同期処理なので非同期にしてあげる。
     // そうしないと処理が完了してsetLoading(false)したはずが、ずれて初期値のままsetLoading(false)がはしってしまう
     (async () => {
       // todo ここのUserがfirebaseに依存しているけどいいのか？AuthService上で返る値を設定したいがやり方がわからない
@@ -50,6 +50,8 @@ export const AuthProvider = ({ children }: { children: ReactChild }) => {
         setLoading(true);
         if (user) {
           setUser({ uid: user.uid });
+        } else {
+          setUser(null);
         }
         setLoading(false);
       });

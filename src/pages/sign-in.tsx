@@ -1,7 +1,8 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import Link from "next/link";
-import { ISign, useAuthContext } from "../contexts/auth";
 import { goto } from "../utils/router";
+import { useAuthContext } from "../contexts/use-auth-context";
+import { ISign } from "../infrastructure/firebase/auth/auth-service";
 
 const SignInPage = (): JSX.Element => {
   const [errText, setErrText] = useState<string | null>(null);
