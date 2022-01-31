@@ -27,7 +27,9 @@ const index = (): JSX.Element => {
   const goToFirestoreSamplePage = async () => {
     await goto("/firestore-sample");
   };
-
+  const goToPrahaFirestorePage = async () => {
+    await goto("/praha-firestore");
+  };
   if (isLoading) {
     return <p>loading...</p>;
   }
@@ -41,6 +43,9 @@ const index = (): JSX.Element => {
       </button>
       <button type="submit" onClick={goToFirestoreSamplePage}>
         FirestoreSample
+      </button>
+      <button type="submit" onClick={goToPrahaFirestorePage}>
+        prahaFirestorePage
       </button>
     </div>
   );
