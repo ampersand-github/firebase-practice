@@ -40,8 +40,8 @@ export class QuestionsRepository implements IQuestionsRepository {
     return questions;
   };
 
-  public create = async (props: IQuestion): Promise<void> => {
-    await this.ref.add(props);
+  public create = async (props: IQuestion, id: string): Promise<void> => {
+    await this.ref.doc(id).create(props);
   };
 
   public deleteAll = async (): Promise<void> => {

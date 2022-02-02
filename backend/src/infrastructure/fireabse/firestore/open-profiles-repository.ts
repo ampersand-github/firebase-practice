@@ -5,6 +5,7 @@ import { IQuestionWithRef } from "./questions-repository";
 import { firestore } from "firebase-admin";
 import CollectionReference = firestore.CollectionReference;
 import DocumentReference = firestore.DocumentReference;
+
 // todo あとで分離
 export interface IOpenProfilesRepository {}
 
@@ -14,6 +15,7 @@ export interface IOpenProfile {
   displayName: string;
   questions: IQuestions[];
 }
+
 export type IOpenProfileWithRef = {
   openProfileRef: DocumentReference;
 } & IOpenProfile;
@@ -51,8 +53,8 @@ export class OpenProfilesRepository implements IOpenProfilesRepository {
     return result;
   };
 
-  public create = async (props: IOpenProfile) => {
-    await this.ref.add(props);
+  public create = async (props: IOpenProfile, id: string): Promise<void> => {
+    await this.ref.doc(id).create(props);
   };
 
   public deleteAll = async (): Promise<void> => {
