@@ -14,7 +14,7 @@ export const USERS_COLLECTION_PATH: [string, ...string[]] = [
 export const OPEN_PROFILES_COLLECTION_PATH: [string, ...string[]] = [
   VERSION,
   "Cs1nhPg47O8luRWELD08",
-  "open-profile",
+  "open-profiles",
 ];
 
 export const QUESTION_STATUS_COLLECTION_PATH: [string, ...string[]] = [

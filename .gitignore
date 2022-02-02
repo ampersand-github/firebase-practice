@@ -36,5 +36,7 @@ yarn-error.log*
 # others
 .idea
 
-# 秘密鍵
+# backend
 backend/praha-challenge-firebase-firebase-adminsdk-x38ii-48d5858b4a.json
+backend/node_modules
+/backend/node_modules/
