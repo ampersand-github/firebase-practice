@@ -2,15 +2,15 @@ import {
   IOpenProfile,
   IQuestions,
   OpenProfilesRepository,
-} from "./infrastructure/fireabse/firestore/open-profiles-repository";
+} from "../infrastructure/fireabse/firestore/open-profiles-repository";
 import {
   IQuestion,
   QuestionsRepository,
-} from "./infrastructure/fireabse/firestore/questions-repository";
-import { QuestionStatus, QuestionStatusEnum } from "./question-status";
+} from "../infrastructure/fireabse/firestore/questions-repository";
+import { QuestionStatus, QuestionStatusEnum } from "../question-status";
 import { v4 as uuidV4 } from "uuid";
 
-export const initializationFireStore = async (
+export const initializationFireStoreUsecase = async (
   openProfilesRepository: OpenProfilesRepository,
   questionsRepository: QuestionsRepository
 ): Promise<void> => {
@@ -20,23 +20,26 @@ export const initializationFireStore = async (
 
   // ***** 課題を作成 *****
   const questionData1: IQuestion = {
+    id: uuidV4().toString(),
     no: 1,
     title: "title1",
     description: "description1",
   };
   const questionData2: IQuestion = {
+    id: uuidV4().toString(),
     no: 2,
     title: "title2",
     description: "description2",
   };
   const questionData3: IQuestion = {
+    id: uuidV4().toString(),
     no: 3,
     title: "title3",
     description: "description3",
   };
-  await questionsRepository.create(questionData1, uuidV4().toString());
-  await questionsRepository.create(questionData2, uuidV4().toString());
-  await questionsRepository.create(questionData3, uuidV4().toString());
+  await questionsRepository.create(questionData1);
+  await questionsRepository.create(questionData2);
+  await questionsRepository.create(questionData3);
 
   // ***** オープンプロフィールを作成 *****
   const notFinished = QuestionStatus.create({
@@ -47,18 +50,21 @@ export const initializationFireStore = async (
     return { ...q, status: notFinished.QuestionStatus };
   });
   const data1: IOpenProfile = {
+    id: uuidV4().toString(),
     displayName: "鈴木一郎",
     questions: init,
   };
   const data2: IOpenProfile = {
+    id: uuidV4().toString(),
     displayName: "田中次郎",
     questions: init,
   };
   const data3: IOpenProfile = {
+    id: uuidV4().toString(),
     displayName: "佐藤三郎",
     questions: init,
   };
-  await openProfilesRepository.create(data1, uuidV4().toString());
-  await openProfilesRepository.create(data2, uuidV4().toString());
-  await openProfilesRepository.create(data3, uuidV4().toString());
+  await openProfilesRepository.create(data1);
+  await openProfilesRepository.create(data2);
+  await openProfilesRepository.create(data3);
 };

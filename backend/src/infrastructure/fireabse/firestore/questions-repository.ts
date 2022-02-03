@@ -3,16 +3,16 @@ import { pathConverterFromSlashToList } from "../../../../../src/infrastructure/
 import { QUESTIONS_COLLECTION_PATH } from "../../../../../src/constant/firestore";
 import { firestore } from "firebase-admin";
 import CollectionReference = firestore.CollectionReference;
-import DocumentReference = firestore.DocumentReference;
+
 // todo あとで分離
 export interface IQuestionsRepository {}
 
 export interface IQuestion {
+  id: string; // uuidV4が望ましい
   no: number;
   title: string;
   description: string;
 }
-export type IQuestionWithRef = { questionRef: DocumentReference } & IQuestion;
 
 export class QuestionsRepository implements IQuestionsRepository {
   private readonly db: _firestore.Firestore;
@@ -24,13 +24,13 @@ export class QuestionsRepository implements IQuestionsRepository {
     this.ref = this.db.collection(_path);
   }
 
-  public findAll = async (): Promise<IQuestionWithRef[]> => {
-    const questions: IQuestionWithRef[] = [];
+  public findAll = async (): Promise<IQuestion[]> => {
+    const questions: IQuestion[] = [];
     const snapshot = await this.ref.get();
     snapshot.docs.map((s) => {
       const data = s.data();
-      const _q: IQuestionWithRef = {
-        questionRef: s.ref,
+      const _q: IQuestion = {
+        id: s.id.toString(),
         no: data.no,
         title: data.title,
         description: data.description,
@@ -40,14 +40,20 @@ export class QuestionsRepository implements IQuestionsRepository {
     return questions;
   };
 
-  public create = async (props: IQuestion, id: string): Promise<void> => {
-    await this.ref.doc(id).create(props);
+  public create = async (props: IQuestion): Promise<void> => {
+    const { id, ...others } = props;
+    await this.ref.doc(id).create(others);
+  };
+
+  public update = async (props: IQuestion): Promise<void> => {
+    const { id, ...others } = props;
+    await this.ref.doc(id).update(others);
   };
 
   public deleteAll = async (): Promise<void> => {
     const questions = await this.findAll();
-    questions.map((q: IQuestionWithRef) => {
-      q.questionRef.delete();
+    questions.map((q: IQuestion) => {
+      this.ref.doc(q.id).delete();
     });
   };
 }
