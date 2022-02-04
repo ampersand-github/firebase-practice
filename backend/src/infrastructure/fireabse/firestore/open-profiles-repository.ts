@@ -2,8 +2,9 @@ import _firestore from "@google-cloud/firestore";
 import { pathConverterFromSlashToList } from "../../../../../src/infrastructure/firebase/firestore/__shared__/path-converter-from-list-to-slash";
 import { OPEN_PROFILES_COLLECTION_PATH } from "../../../../../src/constant/firestore";
 import { firestore } from "firebase-admin";
-import CollectionReference = firestore.CollectionReference;
 import { IQuestion } from "./questions-repository";
+import CollectionReference = firestore.CollectionReference;
+import { openProfileConverter } from "./open-profile-converter";
 
 // todo あとで分離
 export interface IOpenProfilesRepository {}
@@ -30,26 +31,19 @@ export class OpenProfilesRepository implements IOpenProfilesRepository {
     const snapshot = await this.ref.get();
     const result: IOpenProfile[] = [];
     snapshot.docs.map((s) => {
-      const data = s.data();
-      const target: IOpenProfile = {
-        id: s.id.toString(),
-        displayName: data.displayName,
-        questions: data.questions.map((one: IQuestions) => {
-          return {
-            questionId: one.id,
-            no: one.no,
-            title: one.title,
-            description: one.description,
-            status: one.status,
-          };
-        }),
-      };
-      result.push(target);
+      // todo ここの依存
+      result.push(openProfileConverter(s));
     });
     return result;
   };
 
-  public create = async (props: IOpenProfile): Promise<void> => {
+  public findOne = async (id: string): Promise<IOpenProfile> => {
+    const snapshot = await this.ref.doc(id).get();
+    return openProfileConverter(snapshot);
+  };
+
+  // 課題だけをつくる、初期化用、本当はリポジトリにつくるべきでないが、面倒なので
+  public createInitOnly = async (props: IOpenProfile): Promise<void> => {
     const { id, ...others } = props;
     await this.ref.doc(id).create(others);
   };
@@ -59,38 +53,14 @@ export class OpenProfilesRepository implements IOpenProfilesRepository {
     await this.ref.doc(id).update(others);
   };
 
-  /*
-  public questionFinished = async (
-    openProfileRef: DocumentReference,
-    questionRef: DocumentReference
-  ): Promise<void> => {
-    const finished = QuestionStatus.create({
-      questionStatus: QuestionStatusEnum.finished,
-    });
-
-    const a = await openProfileRef.get();
-    console.log("- - - - - - ");
-    const data = a.data();
-
-    if (!data) {
-      throw new Error("課題が登録されていません。");
-    }
-
-    const updated = await data.questions.map((one: IQuestions) => {
-      if (one.id === questionRef.id) {
-        return { ...one, status: finished.QuestionStatus };
-      }
-      return one;
-    });
-
-    await this.ref.doc(a.id).update({ ...data, questions: updated });
-  };
- */
-
   public deleteAll = async (): Promise<void> => {
     const all = await this.findAll();
     all.map((q: IOpenProfile) => {
       this.ref.doc(q.id).delete();
     });
+  };
+
+  public deleteOne = async (id: string): Promise<void> => {
+    await this.ref.doc(id).delete();
   };
 }

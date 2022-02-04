@@ -13,7 +13,7 @@ export interface QuestionStatusProps {
 }
 
 export class QuestionStatus extends ValueObject<QuestionStatusProps> {
-  public get QuestionStatus() {
+  public get questionStatus() {
     return this.props.questionStatus;
   }
 
