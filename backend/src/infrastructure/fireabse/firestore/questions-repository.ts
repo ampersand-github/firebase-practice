@@ -5,10 +5,10 @@ import {
   QUESTIONS_COLLECTION_PATH,
 } from "../../../../../src/constant/firestore";
 import { firestore } from "firebase-admin";
-import CollectionReference = firestore.CollectionReference;
-import Transaction = firestore.Transaction;
 import { IOpenProfile, IQuestions } from "./open-profiles-repository";
 import { openProfileConverter } from "./open-profile-converter";
+import CollectionReference = firestore.CollectionReference;
+import Transaction = firestore.Transaction;
 
 // todo あとで分離
 export interface IQuestionsRepository {}
@@ -67,7 +67,6 @@ export class QuestionsRepository implements IQuestionsRepository {
 
   // 課題だけをつくる、初期化用、本当はリポジトリにつくるべきでないが、面倒なので
   public createInitOnly = async (props: IQuestion): Promise<void> => {
-    // todo open-profileを修正する
     const { id, ...others } = props;
     await this.questionsRef.doc(id).create(others);
   };
@@ -115,7 +114,7 @@ export class QuestionsRepository implements IQuestionsRepository {
             return q;
           });
 
-          t.update(this.openProfilesRef.doc(s.id), { ...a, questions: n });
+          t.update(this.openProfilesRef.doc(s.id), { questions: n });
         });
         t.update(this.questionsRef.doc(id), others);
       });
@@ -141,7 +140,7 @@ export class QuestionsRepository implements IQuestionsRepository {
         openProfiles.docs.map((s) => {
           const _: IOpenProfile = openProfileConverter(s);
           const __ = this.excludeQuestions(_, targetQuestion.id);
-          t.update(this.openProfilesRef.doc(s.id), __);
+          t.update(this.openProfilesRef.doc(s.id), { questions: __ });
         });
         t.delete(this.questionsRef.doc(props.id));
       });
@@ -155,12 +154,11 @@ export class QuestionsRepository implements IQuestionsRepository {
   private excludeQuestions = (
     props: IOpenProfile,
     questionId: string
-  ): IOpenProfile => {
-    const newQuestions = props.questions.filter((q: IQuestions) => {
+  ): IOpenProfile["questions"] => {
+    return props.questions.filter((q: IQuestions) => {
       if (q.id !== questionId) {
         return q;
       }
     });
-    return { ...props, questions: newQuestions };
   };
 }
