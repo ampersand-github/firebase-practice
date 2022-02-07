@@ -3,9 +3,11 @@ import { firestore } from "firebase-admin";
 import DocumentSnapshot = firestore.DocumentSnapshot;
 import DocumentData = firestore.DocumentData;
 
-export const openProfileConverter = (
+export type IOpenProfileConverter = (
   snapshot: DocumentSnapshot<DocumentData>
-): IOpenProfile => {
+) => IOpenProfile;
+
+export const openProfileConverter: IOpenProfileConverter = (snapshot) => {
   const data = snapshot.data();
   return {
     id: snapshot.id.toString(),

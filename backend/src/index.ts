@@ -6,17 +6,18 @@ import {
   QuestionsRepository,
 } from "./infrastructure/fireabse/firestore/questions-repository";
 import { initFirebaseAdmin } from "./infrastructure/fireabse/init";
-import {
-  initializationFireStoreUsecase,
-  openProfileData2,
-  questionData1,
-  questionData2,
-  questionData3,
-} from "./usecase/initialization-usecase";
 import { deleteQuestionUseCase } from "./usecase/delete-question-usecase";
 import { completeQuestionUsecase } from "./usecase/complete-question-usecase";
 import { updateQuestionUsecase } from "./usecase/update-question-usecase";
 import { findAllQuestionUsecase } from "./usecase/find-all-question-usecase";
+import { initializationFireStoreUsecase } from "./usecase/initialization-usecase";
+import {
+  openProfileData2,
+  questionData1,
+  questionData2,
+  questionData3,
+} from "./initial-data";
+import { openProfileConverter } from "./infrastructure/fireabse/firestore/open-profile-converter";
 
 async function main() {
   console.log(`***** START MAIN *****`);
@@ -24,7 +25,7 @@ async function main() {
   // * * * * * firestore初期設定 * * * * *
   initFirebaseAdmin();
   const db: _firestore.Firestore = admin.firestore();
-  const openProfilesRepo = new OpenProfilesRepository(db);
+  const openProfilesRepo = new OpenProfilesRepository(db, openProfileConverter);
   const questionsRepo = new QuestionsRepository(db);
 
   // * * * * * firestore初期データ投入 * * * * *
